@@ -1,7 +1,7 @@
 {
     "name": "airmoi/yii2-fmpodbc",
     "description": "Handle FileMaker Databases through ODBC",
-    "type": "extension",
+    "type": "yii2-extension",
     "keywords": ["yii2","extension","filemaker","odbc"],
     "license": "BSD-3-Clause",
     "authors": [
