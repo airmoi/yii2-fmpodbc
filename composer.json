@@ -1,0 +1,21 @@
+{
+    "name": "airmoi/yii2-fmpodbc",
+    "description": "Hanfle FileMaker Databases through ODBC",
+    "type": "library",
+    "keywords": ["yii2","extension","filemaker","odbc"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Romain Dunand",
+            "email": "airmoi@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "airmoi\\yii2fmpodbc\\": ""
+        }
+    }
+}
