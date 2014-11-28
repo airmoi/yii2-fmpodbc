@@ -12,7 +12,7 @@ namespace airmoi\yii2fmpodbc;
 //use yii\db\Connection;
 
 /**
- * QueryBuilder is the query builder for Oracle databases.
+ * QueryBuilder is the query builder for FileMaker databases.
  *
  * @author Romain Dunand <airmoi@gmail.com>
  * @since 2.0

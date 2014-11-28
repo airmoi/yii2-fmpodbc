@@ -7,8 +7,8 @@
 
 namespace airmoi\yii2fmpodbc;
 
-use yii\db\ColumnSchema;
-
+use airmoi\yii2fmpodbc\ColumnSchema;
+use yii;
 /**
  * Schema is the class for retrieving metadata from a FileMaker ODBC databases (version 13 and above).
  *
@@ -39,6 +39,9 @@ class Schema extends \yii\db\Schema
      */
     public function quoteValue($str)
     {
+        /*if ( $str instanceof \DateTime) {
+            return  "'{d " .$str->format('m-d-Y')."}'";
+        }*/
         if (!is_string($str)) {
             return $str;
         }
@@ -68,6 +71,8 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleColumnName($name)
     {
+        if ( $name === '*' )
+            return $name;
         return '"'.$name.'"';
     }
 
@@ -205,5 +210,46 @@ class Schema extends \yii\db\Schema
          $sql="SELECT DISTINCT(BaseTableName) FROM FileMaker_Tables WHERE BaseTableName LIKE '$XXX\_%'";
          return $this->db->createCommand($sql)->queryColumn();
      }
+     
+     /**
+     * Extracts the PHP type from abstract DB type.
+     * @param ColumnSchema $column the column schema information
+     * @return string PHP type name
+     */
+    protected function getColumnPhpType($column)
+    {
+        static $typeMap = [
+            // abstract type => php type
+            'smallint' => 'integer',
+            'integer' => 'integer',
+            'bigint' => 'integer',
+            'boolean' => 'boolean',
+            'float' => 'double',
+            'binary' => 'resource',
+            'date' => 'date',
+            'time' => 'time',
+            'timestamp' => 'timestamp',
+        ];
+        if (isset($typeMap[$column->type])) {
+            if ($column->type === 'bigint') {
+                return PHP_INT_SIZE == 8 && !$column->unsigned ? 'integer' : 'string';
+            } elseif ($column->type === 'integer') {
+                return PHP_INT_SIZE == 4 && $column->unsigned ? 'string' : 'integer';
+            } else {
+                return $typeMap[$column->type];
+            }
+        } else {
+            return 'string';
+        }
+    }
+    
+    /**
+     * @return ColumnSchema
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function createColumnSchema()
+    {
+        return Yii::createObject('airmoi\yii2fmpodbc\ColumnSchema');
+    }
     
 }

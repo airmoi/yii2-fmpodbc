@@ -6,7 +6,6 @@
  */
 
 namespace airmoi\yii2fmpodbc;
-
 /**
  * This is an extension of the default PDO class of MSSQL and DBLIB drivers.
  * It provides workarounds for improperly implemented functionalities of the MSSQL and DBLIB drivers.
@@ -402,7 +401,7 @@ class PDOStatement extends \PDOStatement {
 }
 
 
-class pdoODBCException extends \Exception { 
+class pdoODBCException extends \yii\base\Exception { 
 
     public function __construct( $message, $code = null) { 
         //echo $message,$code;

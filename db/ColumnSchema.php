@@ -6,7 +6,7 @@
  */
 
 namespace airmoi\yii2fmpodbc;
-
+use yii;
 use yii\base\Object;
 
 /**
@@ -41,6 +41,9 @@ class ColumnSchema extends \yii\db\ColumnSchema
                 return (boolean) $value;
             case 'double':
                 return (double) $value;
+            case 'date':
+                $date = new \DateTime(strtotime($value));
+                return $date->format('d/m/Y');
         }
 
         return $value;
@@ -55,18 +58,21 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public function dbTypecast($value)
     {
-        // the default implementation does the same as casting for PHP but it should be possible
-        // to override this with annotation of explicit PDO type.
        if( (  $value==='' || $value===null ) && $this->allowNull)
 			return "''";
+       
 		switch($this->dbType)
 		{
 			case 'varchar': return (string)"'$value'";
 			case 'binary': return (string)"'$value'";
 			case 'decimal': return $value;
 			case 'time': return "{t '$value'}";
-			case 'date': return "{d '$value'}";
-			case 'timestamp': return "{ts '$value'}";
+			case 'date': 
+                            $date = new \DateTime(strtotime($value));
+                            return "{d '".$date->format('m-d-Y')."'}";
+			case 'timestamp': 
+                            $date = new \DateTime(strtotime($value));
+                            return "{ts '".$date->format('m-d-Y')."'}";
 			default: return $value;
 		}
     }
