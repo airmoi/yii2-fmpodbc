@@ -109,13 +109,13 @@ class PDO extends \PDO
      */
     public function prepare (  $statement , $driver_options = array() ) {
         $this->_query = $statement;
-        if (!$stmt = odbc_prepare($this->_db, $statement))
+        if (!$stmt = @odbc_prepare($this->_db, $statement))
             $this->throwErrors();
        return new PDOStatement($stmt, $this->_db, $statement); 
     }
     
     public function  query (  $statement ) {
-        if (!$stmt = odbc_exec($this->_db, $statement))
+        if (!$stmt = @odbc_exec($this->_db, $statement))
              $this->throwErrors();
        return new PDOStatement($stmt, $this->_db, $statement); 
     }
@@ -238,8 +238,9 @@ class PDOStatement extends \PDOStatement {
      */
     public function execute ( $input_parameters = array() ){
         
-        if (!odbc_execute($this->_statement, $input_parameters))
-            $this->throwErrors();
+        /*if (!odbc_execute($this->_statement, $input_parameters))
+            $this->throwErrors();*/
+        @odbc_execute($this->_statement, $input_parameters);
         
         odbc_longreadlen($this->_statement, 1000000);
         return true;
@@ -255,18 +256,19 @@ class PDOStatement extends \PDOStatement {
         if ($cursor_offset == 0 ) {
             $cursor_offset = null;
         }
-        $numrows = $this->rowCount();
+        //$numrows = $this->rowCount();
         if ( $fetch_style == PDO::FETCH_ASSOC){
-            $row = odbc_fetch_array ($this->_statement );  
+            $row = @odbc_fetch_array ($this->_statement );  
             return $row;
         }
         elseif ( $fetch_style == PDO::FETCH_COLUMN) {    
-            $row = odbc_fetch_array ($this->_statement, $cursor_offset );
+            if ( !$row = @odbc_fetch_array ($this->_statement, $cursor_offset ))
+                    return false;
             return $row[key($row)];
         }
         elseif ( $fetch_style == PDO::FETCH_BOTH or $fetch_style == PDO::FETCH_NUM){
             /*Bug avec driver FMP sur fetch row => emulation */
-            if ( !$rowA = odbc_fetch_array ($this->_statement, $cursor_offset ))
+            if ( !$rowA = @odbc_fetch_array ($this->_statement, $cursor_offset ))
                     return false;
             
             $rowB = array();
@@ -282,7 +284,7 @@ class PDOStatement extends \PDOStatement {
         }
         elseif ( $fetch_style == PDO::FETCH_NUM){
             /*Bug avec driver FMP sur fetch row => emulation */
-            if ( !$rowA = odbc_fetch_array ($this->_statement, $cursor_offset ))
+            if ( !$rowA = @odbc_fetch_array ($this->_statement, $cursor_offset ))
                     return false;
             
             $rowB = array();
@@ -295,7 +297,7 @@ class PDOStatement extends \PDOStatement {
             return false;
         }
         elseif ( $fetch_style == PDO::FETCH_CLASS){
-            return odbc_fetch_object ($this->_statement, $cursor_offset );
+            return @odbc_fetch_object ($this->_statement, $cursor_offset );
         }
         elseif ( $fetch_style == PDO::FETCH_INTO){
             /* NOT SUPPORTED YET */
