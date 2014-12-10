@@ -26,7 +26,7 @@ class PDO extends \PDO
         if(($pos=strpos($dsn, ':'))!==false)
 			$dsn =  strtolower(substr($dsn, $pos+1, strlen($dsn)-$pos));
         
-        if ( !$this->_db = odbc_connect($dsn, $username, $password))
+        if ( !$this->_db = @odbc_connect($dsn, $username, $password))
             $this->throwErrors();
         
         //odbc_longreadlen($this->_db, 1000000) ;//1024*1024*30);
@@ -137,6 +137,8 @@ class PDO extends \PDO
             
             
     private function throwErrors() {
+        if ( !$this->_db)
+            throw new pdoODBCException(odbc_errormsg(). ' ('. odbc_error(). ')');
         if ( odbc_errormsg($this->_db))
             throw new pdoODBCException(odbc_errormsg($this->_db). ' ('. odbc_error($this->_db). ')');
     }
