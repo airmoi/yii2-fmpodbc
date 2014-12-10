@@ -13,6 +13,7 @@ class FmpHelper extends \FileMaker {
     
     public $resultLayout = "PHP_scriptResult";
     public $resultField = "PHP_scriptResult";
+    public $valueListLayout = "PHP_valueLists";
     
     public function __construct() {
         parent::FileMaker('Logistics', '174.40.41.2', \Yii::$app->user->getIdentity()->username, \Yii::$app->user->getIdentity()->Password);
@@ -45,6 +46,22 @@ class FmpHelper extends \FileMaker {
         else {
             return null;
         }
+    }
+    
+    public function getValueList($listName){
+        /*$cmd = $this->newFindAllCommand($this->valueListLayout);
+        $cmd->setRange(0,1);*/
+        $layout = $this->getLayout($this->valueListLayout);
+        if ( self::isError($layout)) {
+            Yii::trace('Error getting layout : '.$this->valueListLayout. '('.$layout->getMessage().')', 'airmoi\yii2fmpodbc\api\FmpHelper::getValueList');
+            return false;
+        }
+        $result = $layout->getValueListTwoFields($listName);
+        if ( self::isError($result)) {
+            Yii::trace('Error getting value list : '.$listName. '('.$result->getMessage().')', 'airmoi\yii2fmpodbc\api\FmpHelper::getValueList');
+            return false;
+        }
+        return $result;
     }
 }
 

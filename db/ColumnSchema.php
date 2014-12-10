@@ -68,12 +68,13 @@ class ColumnSchema extends \yii\db\ColumnSchema
        
 		switch($this->dbType)
 		{
-			/*case 'varchar': return $value;
+			case 'varchar':
+                            return "••varchar••".$value;
 			case 'binary': return $value;
-			case 'decimal': return $value;
-			case 'time': return "{t $value}";
-			case 'date': return "{d $value}";
-			case 'timestamp': return "{ts $value}";*/
+			case 'decimal': return "••decimal••".$value;
+			//case 'time': return "{t $value}";
+			//case 'date': return "{d $value}";
+			///case 'timestamp': return "{ts $value}";
 			default: return $value;
 		}
     }

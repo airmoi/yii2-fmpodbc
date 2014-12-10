@@ -45,13 +45,17 @@ class Schema extends \yii\db\Schema
         if (!is_string($str)) {
             return $str;
         }
-        
-        if ( $isDate = preg_match('/^\d{4}-\d{2}-\d{2}$/', $str))
+       
+        if ( preg_match('/^\d{4}-\d{2}-\d{2}$/', $str))
             return "{d '$str'}";
-        if ( $isDate = preg_match('/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/', $str))
+        if ( preg_match('/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}$/', $str))
             return "{ts '$str'}";
-        if ( $isDate = preg_match('/^\d{2}:\d{2}:\d{2}$/', $str))
+        if ( preg_match('/^\d{2}:\d{2}:\d{2}$/', $str))
             return "{t '$str'}";
+         if ( preg_match('/^••varchar••(.*)/', $str, $match))
+                $str = $match[1];
+        if ( preg_match('/^••decimal••(.*)/', $str, $match))
+                return $match[1];
         
         // the driver doesn't support quote (e.g. oci)
         return "'" . addslashes(str_replace("'", "\'", $str)) . "'";
