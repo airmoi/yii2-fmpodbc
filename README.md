@@ -1,6 +1,14 @@
 Yii2 FileMaker ODBC Connector
 =============================
-Hanfle FileMaker Databases through ODBC
+Handle FileMaker Databases through ODBC and API-PHP helper
+
+This extension provide support for gii.
+
+You must use a naming convention using : 
+- zkp : ID field
+- zkf_XXX : foreign keys
+
+Documentation comming soon
 
 Installation
 ------------
