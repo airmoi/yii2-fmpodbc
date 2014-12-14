@@ -15,6 +15,9 @@ class FmpHelper extends \FileMaker {
     public $resultField = "PHP_scriptResult";
     public $valueListLayout = "PHP_valueLists";
     
+    private $_layout;
+    private $_valueLists = [];
+    
     public function __construct() {
         parent::FileMaker('Logistics', '174.40.41.2', \Yii::$app->user->getIdentity()->username, \Yii::$app->user->getIdentity()->Password);
         return $this;
@@ -51,17 +54,24 @@ class FmpHelper extends \FileMaker {
     public function getValueList($listName){
         /*$cmd = $this->newFindAllCommand($this->valueListLayout);
         $cmd->setRange(0,1);*/
-        $layout = $this->getLayout($this->valueListLayout);
-        if ( self::isError($layout)) {
-            Yii::trace('Error getting layout : '.$this->valueListLayout. '('.$layout->getMessage().')', 'airmoi\yii2fmpodbc\api\FmpHelper::getValueList');
-            return false;
+        if ( isset ( $this->_valueLists[$listName]))
+            return $this->_valueLists[$listName];
+        
+        if ( $this->_layout === null) {
+            $this->_layout = $this->getLayout($this->valueListLayout);
+            if ( self::isError($this->_layout)) {
+                Yii::error('Error getting layout : '.$this->valueListLayout. '('.$this->_layout->getMessage().')', 'airmoi\yii2fmpodbc\api\FmpHelper::getValueList');
+                return [];
+            }
         }
-        $result = $layout->getValueListTwoFields($listName);
+        $result = $this->_layout->getValueListTwoFields($listName);
         if ( self::isError($result)) {
-            Yii::trace('Error getting value list : '.$listName. '('.$result->getMessage().')', 'airmoi\yii2fmpodbc\api\FmpHelper::getValueList');
-            return false;
+            Yii::error('Error getting value list : '.$listName. '('.$result->getMessage().')', 'airmoi\yii2fmpodbc\api\FmpHelper::getValueList');
+            return [];
         }
-        return $result;
+        Yii::info('Get value list : '.$listName, 'airmoi\yii2fmpodbc\api\FmpHelper::getValueList');
+        $this->_valueLists[$listName] = $result;
+        return $this->_valueLists[$listName];
     }
 }
 
