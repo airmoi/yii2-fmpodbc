@@ -138,9 +138,9 @@ class PDO extends \PDO
             
     private function throwErrors() {
         if ( !$this->_db)
-            throw new pdoODBCException(odbc_errormsg(). ' ('. odbc_error(). ')');
+            throw new \yii\db\Exception(odbc_errormsg(). ' ('. odbc_error(). ')');
         if ( odbc_errormsg($this->_db))
-            throw new pdoODBCException(odbc_errormsg($this->_db). ' ('. odbc_error($this->_db). ')');
+            throw new \yii\db\Exception(odbc_errormsg($this->_db). ' ('. odbc_error($this->_db). ')');
     }
 }
 
@@ -400,7 +400,7 @@ class PDOStatement extends \PDOStatement {
             
     private function throwErrors() {
         if ( odbc_error($this->_db))
-            throw new pdoODBCException(odbc_errormsg($this->_db). ' ('. odbc_error($this->_db). ')');
+            throw new \yii\db\Exception(odbc_errormsg($this->_db). ' ('. odbc_error($this->_db). ')');
     }
 }
 
